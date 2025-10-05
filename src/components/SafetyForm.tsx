@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 // 定義 API 回傳的結構 (簡化版)
 interface RecommendationResult {
   safety_score: number;
-  message: string;
+  recommendation: string; // <--- 修正欄位名稱
+  reasoning: string;      // <--- 新增欄位
   // ... 其他結構化建議
 }
 
@@ -85,10 +86,16 @@ const SafetyForm: React.FC = () => {
       {/* 結果顯示區 */}
       {error && <p className="text-red-500 mt-4">{error}</p>}
       {result && (
-        <div className="mt-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-800">
+        <div className="mt-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 space-y-2">
           <h3 className="text-xl font-semibold">安全評分: <span className="text-2xl">{result.safety_score} / 100</span></h3>
-          <p className="mt-2 whitespace-pre-wrap">{result.message}</p>
-          {/* 這裡可以根據 API 回傳的結構進一步美化結果，例如分項列點 */}
+          <div>
+            <h4 className="font-bold">AI 建議:</h4>
+            <p className="whitespace-pre-wrap">{result.recommendation}</p>
+          </div>
+          <div>
+            <h4 className="font-bold">理由:</h4>
+            <p className="whitespace-pre-wrap">{result.reasoning}</p>
+          </div>
         </div>
       )}
     </div>
