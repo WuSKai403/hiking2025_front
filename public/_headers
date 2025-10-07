@@ -1,9 +1,0 @@
-# _headers 檔案：為 API 路徑設定 CORS 標頭
-
-/api/*
-  # 允許來自您自己網站的跨域請求
-  Access-Control-Allow-Origin: https://hikingweatherguide.com
-  # 允許的方法，必須包含 OPTIONS 和 POST
-  Access-Control-Allow-Methods: POST, OPTIONS
-  # 允許的請求標頭
-  Access-Control-Allow-Headers: Content-Type
