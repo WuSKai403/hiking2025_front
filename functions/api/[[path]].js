@@ -6,14 +6,17 @@
  */
 export async function onRequest(context) {
   // 從 context 中獲取請求和參數
-  const { request, params } = context;
+  const { request, params, env } = context;
 
   // 重建請求路徑
   // params.path 是一個陣列，包含了 [[path]] 捕捉到的所有路徑片段
   const path = params.path.join('/');
 
+  // 從環境變數中讀取 API URL，如果不存在則使用預設值
+  const apiUrl = env.API_URL || 'https://api.hikingweatherguide.com';
+
   // 目標後端 API 的 URL
-  const destinationURL = `https://api.hikingweatherguide.com/api/${path}`;
+  const destinationURL = `${apiUrl}/api/${path}`;
 
   // 建立一個新的請求物件，將原始請求的方法、標頭、內文都轉發過去
   const apiRequest = new Request(destinationURL, request);
