@@ -38,7 +38,7 @@ const SafetyForm: React.FC = () => {
 
         const formattedTrails = data.map(trail => ({
           value: trail.id.toString(),
-          label: `${trail.id}: ${trail.name}`,
+          label: trail.name,
         }));
         setTrails(formattedTrails);
       } catch (err) {
@@ -124,7 +124,7 @@ const SafetyForm: React.FC = () => {
       {error && <p className="text-red-500 mt-4">{error}</p>}
       {result && (
         <div className="mt-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 space-y-2">
-          <h3 className="text-xl font-semibold">安全評分: <span className="text-2xl">{result.safety_score} / 100</span></h3>
+          <h3 className="text-xl font-semibold">安全評分: <span className="text-2xl">{result.safety_score} / 5</span></h3>
           <div>
             <h4 className="font-bold">AI 建議:</h4>
             <p className="whitespace-pre-wrap">{result.recommendation}</p>
