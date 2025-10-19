@@ -1,4 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Combobox } from './ui/combobox'; // 引入 Combobox
+import type { ComboboxOption } from './ui/combobox';
+
+// 定義從 /api/trails 回傳的步道結構
+interface Trail {
+  id: number;
+  name: string;
+  location: string;
+  difficulty: string;
+  review_count: number;
+}
 
 // 定義 API 回傳的結構 (簡化版)
 interface RecommendationResult {
@@ -10,10 +21,34 @@ interface RecommendationResult {
 
 const SafetyForm: React.FC = () => {
   const [trailId, setTrailId] = useState('108');
+  const [trails, setTrails] = useState<ComboboxOption[]>([]);
   const [userDesc, setUserDesc] = useState('預計下午兩點出發，單人輕裝，天氣看起來有點陰。');
   const [result, setResult] = useState<RecommendationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchTrails = async () => {
+      try {
+        const response = await fetch('/api/trails');
+        if (!response.ok) {
+          throw new Error('無法獲取步道列表');
+        }
+        const data: Trail[] = await response.json();
+
+        const formattedTrails = data.map(trail => ({
+          value: trail.id.toString(),
+          label: `${trail.id}: ${trail.name}`,
+        }));
+        setTrails(formattedTrails);
+      } catch (err) {
+        console.error(err);
+        // 可以在這裡設定一個錯誤狀態來通知使用者
+      }
+    };
+
+    fetchTrails();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,13 +90,15 @@ const SafetyForm: React.FC = () => {
       <h2 className="text-2xl font-bold text-center">快樂登山家 | 路徑安全查詢</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">路徑 ID / 名稱 (e.g. 108)</label>
-          <input
-            type="text"
+          <label className="block text-sm font-medium text-gray-700">路徑 ID / 名稱</label>
+          <Combobox
+            options={trails}
             value={trailId}
-            onChange={(e) => setTrailId(e.target.value)}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            required
+            onChange={setTrailId}
+            placeholder="選擇或搜尋步道..."
+            searchPlaceholder="搜尋步道 ID 或名稱..."
+            emptyText="找不到步道。"
+            className="w-full mt-1"
           />
         </div>
         <div>
